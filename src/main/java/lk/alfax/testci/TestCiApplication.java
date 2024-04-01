@@ -8,6 +8,6 @@ public class TestCiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TestCiApplication.class, args);
-	
+	}
 
 }

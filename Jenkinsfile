@@ -1,11 +1,26 @@
-node {
-  stage('SCM') {
-    checkout scm
-  }
-  stage('SonarQube Analysis') {
-    def mvn = tool 'MVN';
-    withSonarQubeEnv() {
-      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=KasunHewage_test-ci_aeb6830e-3c6a-438c-bc5b-3995dee3fd1c -Dsonar.projectName='test-ci'"
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                // Use Maven to build the project
+                sh 'mvn clean package -DskipTests' // Adjust this command according to your Maven setup
+                
+                // You can add additional Maven goals or options as needed
+                // e.g., 'mvn clean package -DskipTests' to skip tests during build
+            }
+            
+            post {
+                success {
+                    // Archive the generated WAR file
+                    archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
+                    
+                    // You can add further actions here, such as deploying the WAR file to a server
+                }
+            }
+        }
     }
-  }
+    
+    // You can add additional stages for deployment, testing, etc.
 }
